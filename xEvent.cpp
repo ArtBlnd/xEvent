@@ -20,7 +20,7 @@ WNDPROC originalWndProc;
 LRESULT CALLBACK xEventListener(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     factory.DispatchEvent<MouseEvent>(hwnd, uMsg, wParam, lParam);
-    return originalWndProc(hwnd, uMsg, wParam, lParam);
+    return CallWindowProc(originalWndProc, hwnd, uMsg, wParam, lParam);
 }
 
 bool RegisterToListener(HWND hWindow)
