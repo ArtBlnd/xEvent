@@ -6,9 +6,21 @@
 #include <vector>
 #include <functional>
 
+template<class... ArgumentType>
+class IDispatchable
+{
+protected:
+    virtual bool Dispatch(ArgumentType...) = 0;
+public:
+    bool operator()(ArgumentType... Arguments)
+    {
+        return Dispatch(Arguments...);
+    }
+};
+
 // Basic IEvent Implementation.
 template<class... ArgumentType>
-class IEvent
+class IEvent : public IDispatchable<ArgumentType...>
 {
 public:
     // Original IEvent Type(with Original Template ArgumentType)
@@ -16,14 +28,11 @@ public:
 
     IEvent() {}
     virtual ~IEvent() = default;
-
-    // Dispatch Event on this Interface.
-    virtual bool Dispatch(ArgumentType...) = 0;
 };
 
 // Function Linkable IEvent Implementation
 template<typename EventType, typename... ArgumentType>
-class ILinkable
+class ILinkable : public IDispatchable<EventType, ArgumentType...>
 {
     typedef bool (FuncType)(ArgumentType...);
     typedef std::function<FuncType> FunctionType;
@@ -124,7 +133,7 @@ bool IEventChunk<EventType, IEvent<ArgumentType...>>::DispatchEvent(ArgumentType
             {
                 continue;
             }
-            if (eventObject.Dispatch(Arguments...) == false && fKeepExcute == false)
+            if (eventObject(Arguments...) == false && fKeepExcute == false)
             {
                 // if fKeeExecute is false. Stop execute if failed.
                 return false;
