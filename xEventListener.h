@@ -14,7 +14,7 @@ template<typename EventType>
 class RawEvent : public IEvent<HWND, UINT, WPARAM, LPARAM>
 {
 private:
-    typedef struct __LastestMessage
+    struct
     {
         HWND        hWindow;
         UINT        message;
