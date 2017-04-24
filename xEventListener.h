@@ -32,7 +32,7 @@ public:
     RawEvent() {}
     virtual ~RawEvent() {}
     // Raw Event Base.
-    bool Dispatch(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) 
+    virtual bool Dispatch(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) 
     {
         // Store Event Message;
         lastMessage.hWindow = hWindow;
@@ -42,25 +42,19 @@ public:
 
         return true;
     }
-
-    virtual EventType getEventType() = 0;
 };
 
-class MouseEvent : public RawEvent<EventType>, public ILinkable<MouseStatus, Position>
+class IMouseEvent : public RawEvent<EventType>, public ILinkable<MouseStatus, Position>
 {
 private:
-    typedef RawEvent<EventType>              OriginalEvent;
-    typedef ILinkable<MouseStatus, Position> OriginalLinkable;
-
+    typedef typename RawEvent<EventType>                 Original;
+    typedef typename ILinkable<MouseStatus, Position>    Linkable;
 public:
-    MouseEvent() {}
-    virtual ~MouseEvent() {}
+    IMouseEvent() {}
+    virtual ~IMouseEvent() {}
 
-    bool Dispatch(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam)
+    virtual bool Dispatch(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam)
     {
-        // Calling Original.
-        OriginalEvent::Dispatch(hWindow, message, wParam, lParam);
-
         // Infomations
         Position      currentPosition;
         MouseStatus   currentStatus;
@@ -69,16 +63,42 @@ public:
         lParamToPosition(lParam, currentPosition);
         wParamToStatus(wParam, currentStatus);
 
-        OriginalLinkable::Dispatch(currentStatus, currentPosition);
+        // Pre dispatching.
+        Original::Dispatch(hWindow, message, wParam, lParam);
+        Linkable::Dispatch(currentStatus, currentPosition);
+       
         return onMouseEvent(currentStatus, currentPosition);
     }
     virtual bool onMouseEvent(MouseStatus status, Position position)
     {
         return true;
     }
-    EventType getEventType() override
+};
+
+class IKeyboardEvent : public RawEvent<EventType>, public ILinkable<KeyboardStatus, Key>
+{
+private:
+    typedef typename RawEvent<EventType>             Original;
+    typedef typename ILinkable<KeyboardStatus, Key>  Linkable;
+public:
+    IKeyboardEvent() {}
+    virtual ~IKeyboardEvent() {}
+
+    virtual bool Dispatch(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam)
     {
-        return EventType::TypeMouseEvent;
+        Key            currentKey;
+        KeyboardStatus currentStatus;
+
+        // Pre dispatching.
+        Original::Dispatch(hWindow, message, wParam, lParam);
+        Linkable::Dispatch(currentStatus, currentKey);
+
+        return onKeyboardEvent(currentStatus, currentKey);
+    }
+
+    virtual bool onKeyboardEvent(KeyboardStatus status, Key key)
+    {
+        return true;
     }
 };
 

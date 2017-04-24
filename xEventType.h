@@ -22,7 +22,8 @@ enum class MouseStatus
 
 enum class KeyboardStatus
 {
-
+    KeyDown,
+    KeyUp
 };
 
 struct Position

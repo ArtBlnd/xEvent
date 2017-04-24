@@ -45,7 +45,7 @@ class ILinkable : public IDispatchable<EventType, ArgumentType...>
     
     // Function that linked.
     std::vector<FunctionObject> LinkedProcs;
-protected:
+public:
     bool Dispatch(EventType Type, ArgumentType... Arguments)
     {
         for(const FunctionObject& object : LinkedProcs)
@@ -59,7 +59,6 @@ protected:
 
         return true;
     }
-public:
     // Link function to this Event Interface.
     void Link(const FunctionType& function, EventType Type)
     {
