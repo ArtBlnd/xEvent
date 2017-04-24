@@ -20,7 +20,7 @@ private:
         UINT        message;
         WPARAM      wParam;
         LPARAM      lParam;
-    } LastestMessage;
+    } lastMessage;
 
 protected:
     HWND   getWindowHandle()  const { return lastMessage.hWindow; }
