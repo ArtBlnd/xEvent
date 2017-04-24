@@ -6,6 +6,9 @@
 #include "xEvent.h"
 #include "xEventType.h"
 
+#pragma warning(push)
+#pragma warning(disable:4700)
+
 // Recv Raw Windows Event.
 template<typename EventType>
 class RawEvent : public IEvent<HWND, UINT, WPARAM, LPARAM>
@@ -77,7 +80,7 @@ public:
 
 class IKeyboardEvent : public RawEvent<EventType>, public ILinkable<KeyboardStatus, Key>
 {
-private:
+private:    
     typedef typename RawEvent<EventType>             Original;
     typedef typename ILinkable<KeyboardStatus, Key>  Linkable;
 public:
@@ -102,4 +105,5 @@ public:
     }
 };
 
+#pragma warning(pop)
 #endif
