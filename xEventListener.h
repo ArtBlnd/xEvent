@@ -32,7 +32,7 @@ public:
     RawEvent() {}
     virtual ~RawEvent() {}
     // Raw Event Base.
-    virtual bool Dispatch(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) 
+    bool Dispatch(HWND hWindow, UINT message, WPARAM wParam, LPARAM lParam) 
     {
         // Store Event Message;
         lastMessage.hWindow = hWindow;
