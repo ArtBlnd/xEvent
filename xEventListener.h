@@ -22,9 +22,6 @@ private:
         LPARAM      lParam;
     } LastestMessage;
 
-    // recent message.
-    LastestMessage lastMessage;
-
 protected:
     HWND   getWindowHandle()  const { return lastMessage.hWindow; }
     UINT   getWindowMessage() const { return lastMessage.message; }
